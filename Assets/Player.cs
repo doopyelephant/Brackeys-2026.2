@@ -13,12 +13,17 @@ public class Player : MonoBehaviour
     public float speed = 10f;
 
     public float bobspeed = 2f;
+    private float dis = 0f;
     public bool gunequipped = true;
     private Vector3 prevpos;
     private GameObject Gun;
-
+    public Sprite char1;
+    public Sprite char2;
     public GameObject Bullet;
     private Rigidbody2D rb;
+
+    public float stride = 5f;
+    private bool walkcycle = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -33,6 +38,31 @@ public class Player : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         var hor = Input.GetAxis("Horizontal");
         var ver = Input.GetAxis("Vertical");
+        dis += new Vector2(hor, ver).magnitude;
+        if (hor != 0)
+        {
+            if (hor > 0f)
+            {
+                spriteRenderer.flipX = false;
+            }
+            else
+            {
+                spriteRenderer.flipX = true;
+            }
+        }
+        if (dis > stride)
+        {
+            if (walkcycle)
+            {
+                spriteRenderer.sprite = char1;
+            }
+            else
+            {
+                spriteRenderer.sprite = char2;
+            }
+            walkcycle = !walkcycle;
+            dis = 0f;
+        }
         transform.Translate(new Vector3(hor, ver, 0) * (Time.deltaTime * speed));
         moving = hor != 0 || ver != 0;
         var c = spriteRenderer.transform.localScale.y;
@@ -52,7 +82,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            targety = 1.1f;
+            targety = 2f;
         }
 
         if (Gun != null)
@@ -78,7 +108,7 @@ public class Player : MonoBehaviour
         }
 
 
-        spriteRenderer.transform.localScale = new Vector3(1, Mathf.Lerp(c,targety,Time.deltaTime * bobspeed), 1);
+        spriteRenderer.transform.localScale = new Vector3(2, Mathf.Lerp(c,targety,Time.deltaTime * bobspeed), 2);
         prevpos = transform.position;
     }
 }
