@@ -1,6 +1,8 @@
+using System.Collections;
+using DefaultNamespace;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Health
 {
     SpriteRenderer spriteRenderer;
     bool moving = false;
@@ -17,6 +19,7 @@ public class Player : MonoBehaviour
     public bool gunequipped = true;
     private Vector3 prevpos;
     private GameObject Gun;
+    private Shoot sht;
     public Sprite char1;
     public Sprite char2;
     public GameObject Bullet;
@@ -24,6 +27,10 @@ public class Player : MonoBehaviour
 
     public float stride = 5f;
     private bool walkcycle = false;
+    public float cooldown = 0.5f;
+    private bool canShoot = true;
+
+    public GameObject DiedMenu;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -87,14 +94,17 @@ public class Player : MonoBehaviour
 
         if (Gun != null)
         {
-            var mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
-            Gun.transform.position = transform.position + Vector3.Normalize(mouse - transform.position) * 2;
+            var mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
+            Gun.transform.position = transform.position + Vector3.Normalize(mouse - transform.position) * 1;
             Gun.transform.rotation = Quaternion.LookRotation(mouse - transform.position) * Quaternion.Euler(0, 90, 0);
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && canShoot)
             {
-                var bulletobj = Instantiate(Bullet, Gun.transform.position, Quaternion.LookRotation(mouse - transform.position));
+                canShoot = false;
+                StartCoroutine(Cooldown());
+                sht.ShootGun();
+                var bulletobj = Instantiate(Bullet, Gun.transform.position + (mouse - transform.position).normalized * 1f, Quaternion.LookRotation((Gun.transform.position - transform.position).normalized) * Quaternion.Euler(0, 90,0));
                 var bullet = bulletobj.GetComponent<Bullet>();
-                bullet.target = mouse;
+                bullet.target = (mouse - transform.position).normalized * 500f;
                 bulletobj.GetComponent<Rigidbody2D>().linearVelocity = (transform.position - prevpos)/Time.deltaTime;
                 bullet.Init();
             }
@@ -104,11 +114,45 @@ public class Player : MonoBehaviour
             if (gunequipped)
             {
                 Gun = GameObject.Find("Gun");
+                sht = Gun.GetComponent<Shoot>();
             }
         }
 
 
         spriteRenderer.transform.localScale = new Vector3(2, Mathf.Lerp(c,targety,Time.deltaTime * bobspeed), 2);
         prevpos = transform.position;
+    }
+
+    public override void DamageEffect(float fraction)
+    {
+    spriteRenderer.color = Color.Lerp(spriteRenderer.color, Color.red, fraction * 2f);
+    StartCoroutine(ResetColor(0.2f));
+    }
+
+    public override void HealEffect(float fraction)
+    {
+        spriteRenderer.color = Color.Lerp(spriteRenderer.color, Color.green, fraction * 2f);
+        StartCoroutine(ResetColor(0.2f));
+    }
+
+    public override void Die()
+    {
+    spriteRenderer.color = Color.red;
+    Camera.main.backgroundColor = Color.crimson;
+    Time.timeScale = 0.05f;
+    Instantiate(DiedMenu);
+    this.enabled = false;
+    }
+
+    IEnumerator Cooldown()
+    {
+        yield return new WaitForSeconds(cooldown);
+        canShoot = true;
+    }
+
+    IEnumerator ResetColor(float time)
+    {
+        yield return new WaitForSeconds(time);
+        spriteRenderer.color = Color.white;
     }
 }

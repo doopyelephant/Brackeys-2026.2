@@ -19,6 +19,14 @@ public class MenuManager : MonoBehaviour
     }
     public void Play()
     {
+        Debug.Log("play");
         SceneManager.LoadScene("WakeUp");
+    }
+
+    public void Restart()
+    {
+        Debug.Log("restart");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
