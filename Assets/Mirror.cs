@@ -12,16 +12,18 @@ public class Mirror : MonoBehaviour
     private PolygonCollider2D poly1;
     private PolygonCollider2D poly2;
     private ushort [] verts = new ushort []{0,1,2,1,2,3};
+    private BoxCollider2D box;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        box = transform.GetChild(0).GetComponent<BoxCollider2D>();
         poly1 = ref1.GetComponent<PolygonCollider2D>();
         poly2 = ref2.GetComponent<PolygonCollider2D>();
         player = GameObject.FindGameObjectWithTag("Player");
         /*lr = GetComponent<LineRenderer>();
         lr.positionCount = 3;
-        lr.widthMultiplier = transform.localScale.x;*/
+        lr.widthMultiplier = box.size.x;*/
     }
 
     // Update is called once per frame
@@ -49,14 +51,14 @@ public class Mirror : MonoBehaviour
         Vector2[] ref2verts = new Vector2[4];
         ref1verts = sprite.vertices;
         ref2verts = sprite2.vertices;
-        ref1verts[0] = new Vector3(128,128) + Vector3.Cross(Vector3.forward, norm) * (transform.localScale.x * 0.5f);
-        ref1verts[1] = new Vector3(128,128) + Vector3.Cross(norm, Vector3.forward) * (transform.localScale.x * 0.5f);
-        ref1verts[2] = new Vector3(128,128) + (player.transform.position - transform.position) + Vector3.Cross(Vector3.forward, norm) * (transform.localScale.x * 0.5f);
-        ref1verts[3] = new Vector3(128,128) + (player.transform.position - transform.position) + Vector3.Cross(norm, Vector3.forward) * (transform.localScale.x * 0.5f);
-        ref2verts[0] = new Vector3(128,128) + Vector3.Cross(Vector3.forward, norm) * (transform.localScale.x * 0.5f);
-        ref2verts[1] = new Vector3(128,128) + Vector3.Cross(norm, Vector3.forward) * (transform.localScale.x * 0.5f);
-        ref2verts[2] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(Vector3.forward, norm) * (transform.localScale.x * 0.5f);
-        ref2verts[3] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(norm,Vector3.forward) * (transform.localScale.x * 0.5f);
+        ref1verts[0] = new Vector3(128,128) + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
+        ref1verts[1] = new Vector3(128,128) + Vector3.Cross(norm, Vector3.forward) * (box.size.x * 0.5f);
+        ref1verts[2] = new Vector3(128,128) + (player.transform.position - transform.position) + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
+        ref1verts[3] = new Vector3(128,128) + (player.transform.position - transform.position) + Vector3.Cross(norm, Vector3.forward) * (box.size.x * 0.5f);
+        ref2verts[0] = new Vector3(128,128) + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
+        ref2verts[1] = new Vector3(128,128) + Vector3.Cross(norm, Vector3.forward) * (box.size.x * 0.5f);
+        ref2verts[2] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
+        ref2verts[3] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(norm,Vector3.forward) * (box.size.x * 0.5f);
         Debug.Log(sprite.rect.width + " " + sprite.rect.height + " " + sprite.rect.x + " " + sprite.rect.y);
         Debug.Log(sprite2.rect.width + " " + sprite2.rect.height + " " + sprite2.rect.x + " " + sprite2.rect.y);
         Debug.Log(ref1verts[0] + " " + ref1verts[1] + " " + ref1verts[2]);

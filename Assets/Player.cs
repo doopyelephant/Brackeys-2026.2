@@ -45,7 +45,7 @@ public class Player : Health
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         rb.linearVelocity = Vector2.zero;
         var hor = Input.GetAxis("Horizontal");
@@ -75,7 +75,8 @@ public class Player : Health
             walkcycle = !walkcycle;
             dis = 0f;
         }
-        transform.Translate(new Vector3(hor, ver, 0) * (Time.deltaTime * speed));
+        rb.MovePosition(transform.position + new Vector3(hor, ver, 0) * (Time.deltaTime * speed));
+       // transform.Translate();
         moving = hor != 0 || ver != 0;
         var c = spriteRenderer.transform.localScale.y;
         if (moving)
