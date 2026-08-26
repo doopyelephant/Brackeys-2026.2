@@ -31,9 +31,14 @@ public class Player : Health
     private bool canShoot = true;
 
     public GameObject DiedMenu;
+    private AudioSource audioSource;
+
+    private AudioSource Gunaudio;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true;
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         targety = miny;
@@ -92,6 +97,19 @@ public class Player : Health
             targety = 2f;
         }
 
+        if (!moving)
+        {
+            audioSource.Stop();
+            audioSource.time = 0;
+        }
+        else
+        {
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+        }
+
         if (Gun != null)
         {
             var mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
@@ -99,6 +117,7 @@ public class Player : Health
             Gun.transform.rotation = Quaternion.LookRotation(mouse - transform.position) * Quaternion.Euler(0, 90, 0);
             if (Input.GetMouseButtonDown(0) && canShoot)
             {
+                Gunaudio.Play();
                 canShoot = false;
                 StartCoroutine(Cooldown());
                 sht.ShootGun();
@@ -115,6 +134,7 @@ public class Player : Health
             {
                 Gun = GameObject.Find("Gun");
                 sht = Gun.GetComponent<Shoot>();
+                Gunaudio = Gun.GetComponent<AudioSource>();
             }
         }
 

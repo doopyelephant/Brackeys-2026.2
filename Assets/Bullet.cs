@@ -39,9 +39,11 @@ public class Bullet : MonoBehaviour
     public GameObject trig;
     public float lockspeed = 10f;
     private SpriteRenderer spriteRenderer;
+    private BoxCollider2D box;
 
     public void Init()
     {
+        box = GetComponent<BoxCollider2D>();
         bouncesLeft = bounces;
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         filter.layerMask = LayerMask.GetMask("Player");
@@ -74,7 +76,7 @@ public class Bullet : MonoBehaviour
             }
             return Vector3.Distance(c.ClosestPoint(transform.position), transform.position);
         }).ToArray();
-        if (got != 0 && ((colliders[0].transform.parent.GetComponent<Mirror>() == null) || poly.Overlap(filter2, colliders2) != 0))
+        if (got != 0 && ((colliders[0].transform.parent.GetComponent<Mirror>() == null) || box.Overlap(filter2, colliders2) != 0))
         {
 
             var color = Vector3.MoveTowards(new Vector3(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b),Vector3.right,100f * Time.deltaTime);

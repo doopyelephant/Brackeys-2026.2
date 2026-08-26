@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -66,8 +68,8 @@ public class Mirror : MonoBehaviour
         var scaler = new Vector3(1f/(transform.localScale.x/sprite.rect.width),1f/(transform.localScale.y/sprite.rect.width),0);
         ref1.transform.localScale = scaler;
         ref2.transform.localScale = scaler;
-        poly1.points = ref1verts;
-        poly2.points = ref2verts;
+        poly1.points = ref1verts.Select(v => new Vector2(v.x - 128f,v.y - 128f)).ToArray();
+        poly2.points = ref2verts.Select(v => new Vector2(v.x - 128f,v.y - 128f)).ToArray();
 
         /*ref1.transform.localScale = new Vector3(10,10,10);
         ref2.transform.localScale = new Vector3(10,10,10);*/
@@ -77,4 +79,5 @@ public class Mirror : MonoBehaviour
      */
 
     }
+
 }
