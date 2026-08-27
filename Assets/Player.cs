@@ -75,7 +75,7 @@ public class Player : Health
             walkcycle = !walkcycle;
             dis = 0f;
         }
-        rb.MovePosition(transform.position + new Vector3(hor, ver, 0) * (Time.deltaTime * speed));
+        transform.Translate(new Vector3(hor, ver, 0) * (Time.deltaTime * speed));
        // transform.Translate();
         moving = hor != 0 || ver != 0;
         var c = spriteRenderer.transform.localScale.y;
