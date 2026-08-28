@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
@@ -27,6 +28,18 @@ public class MenuManager : MonoBehaviour
     {
         Debug.Log("restart");
         Time.timeScale = 1f;
+        if (GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponent<Player>().hascompletedtutorial)
+        {
+            if (!GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponent<Player>().skiptutorial)
+            {
+                GameObject.FindGameObjectWithTag("Player").transform.parent.GetComponent<Player>().skiptutorial = true;
+            }
+
+            var skipper = new GameObject("Skipper");
+            skipper.AddComponent<TutorialSkipper>();
+            DontDestroyOnLoad(skipper);
+        }
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

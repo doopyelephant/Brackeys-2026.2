@@ -23,6 +23,7 @@ public class Enemy : Health
     private bool walkcycle = false;
     private float dis = 0f;
     private GameObject player;
+    private Player plyr;
     private Rigidbody2D rb;
     private Vector3 prevmov = Vector3.zero;
     float lerpspeed = 10f;
@@ -37,12 +38,17 @@ public class Enemy : Health
         gunsprite.enabled = false;
         rb = GetComponent<Rigidbody2D>();
         player = GameObject.FindGameObjectWithTag("Player");
+        plyr = player.transform.parent.GetComponent<Player>();
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (plyr.isprompt)
+        {
+            return;
+        }
         var movement = Vector3.MoveTowards(prevmov,GetMovement(),lerpspeed * Time.deltaTime);
         var moving = movement.magnitude > 0.1f;
         if (moving)
@@ -162,6 +168,7 @@ public class Enemy : Health
 
     public override void Die()
     {
+        player.transform.parent.GetComponent<Player>().haskilled = true;
      Destroy(gameObject);
     }
 }

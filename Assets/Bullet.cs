@@ -35,7 +35,7 @@ public class Bullet : MonoBehaviour
     public Camera cam = null;
     private PolygonCollider2D poly = null;
     private ContactFilter2D filter = new ContactFilter2D();
-    private ContactFilter2D filter2 = new ContactFilter2D();
+   // private ContactFilter2D filter2 = new ContactFilter2D();
     public GameObject trig;
     public float lockspeed = 10f;
     private SpriteRenderer spriteRenderer;
@@ -46,10 +46,10 @@ public class Bullet : MonoBehaviour
         box = GetComponent<BoxCollider2D>();
         bouncesLeft = bounces;
         spriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        filter.layerMask = LayerMask.GetMask("Player");
+        filter.layerMask = LayerMask.GetMask("Player","MirrorBox");
         filter.useLayerMask = true;
-        filter2.layerMask = LayerMask.GetMask("Mirror");
-        filter2.useLayerMask = true;
+       /* filter2.layerMask = LayerMask.GetMask("Mirror");
+        filter2.useLayerMask = true;*/
         poly = GetComponentInChildren<PolygonCollider2D>();
         cam = Camera.main;
         rb = GetComponent<Rigidbody2D>();
@@ -66,7 +66,7 @@ public class Bullet : MonoBehaviour
         }
 
         Collider2D[] colliders = new Collider2D[10];
-        Collider2D[] colliders2 = new Collider2D[1];
+      //  Collider2D[] colliders2 = new Collider2D[1];
         var got = poly.Overlap(filter, colliders);
         colliders = colliders.OrderBy(c =>
         {
@@ -76,13 +76,14 @@ public class Bullet : MonoBehaviour
             }
             return Vector3.Distance(c.ClosestPoint(transform.position), transform.position);
         }).ToArray();
-        if (got != 0 && ((colliders[0].transform.parent.GetComponent<Mirror>() == null) || box.Overlap(filter2, colliders2) != 0))
+
+        if (got != 0 && ((colliders[0].transform.parent.GetComponent<Mirror>() == null) || /*box.Overlap(filter2, colliders2) != 0*/ Physics2D.OverlapPoint(transform.position,LayerMask.GetMask("Mirror")) != null))
         {
 
             var color = Vector3.MoveTowards(new Vector3(spriteRenderer.color.r,spriteRenderer.color.g,spriteRenderer.color.b),Vector3.right,100f * Time.deltaTime);
             spriteRenderer.color = new Color(color.x,color.y,color.z);
             rb.linearVelocity = Vector3.MoveTowards(rb.linearVelocity,
-                (colliders[0].transform.position - transform.position).normalized * speed, lockspeed * Time.deltaTime);
+                (colliders[0].transform.position - transform.position).normalized * speed, lockspeed * Time.deltaTime * (colliders[0].transform.parent.GetComponent<Mirror>() == null ? 1f : 2f));
         }
         else
         {

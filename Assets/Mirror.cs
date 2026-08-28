@@ -41,8 +41,19 @@ public class Mirror : MonoBehaviour
             ref2.enabled = false;
             return;
         }
+
+        if (!Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, 100,LayerMask.GetMask("Player","Default")).collider.gameObject.CompareTag("Player"))
+        {
+ref1.enabled = false;
+ref2.enabled = false;
+poly1.enabled = false;
+poly2.enabled = false;
+return;
+        }
         ref1.enabled = true;
         ref2.enabled = true;
+        poly1.enabled = true;
+        poly2.enabled = true;
         var sprite = ref1.sprite;
         sprite.SetVertexCount(4);
         var sprite2 = ref2.sprite;
@@ -57,12 +68,12 @@ public class Mirror : MonoBehaviour
         ref1verts[3] = new Vector3(128,128) + (player.transform.position - transform.position) + Vector3.Cross(norm, Vector3.forward) * (box.size.x * 0.5f);
         ref2verts[0] = new Vector3(128,128) + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
         ref2verts[1] = new Vector3(128,128) + Vector3.Cross(norm, Vector3.forward) * (box.size.x * 0.5f);
-        ref2verts[2] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(Vector3.forward, norm) * (box.size.x * 0.5f);
-        ref2verts[3] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * 10 + Vector3.Cross(norm,Vector3.forward) * (box.size.x * 0.5f);
-        Debug.Log(sprite.rect.width + " " + sprite.rect.height + " " + sprite.rect.x + " " + sprite.rect.y);
+        ref2verts[2] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * Physics2D.Raycast(transform.position,Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized,100,LayerMask.GetMask("Player","Default")).distance + Vector3.Cross(Physics2D.Raycast(transform.position,Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized,100,LayerMask.GetMask("Player","Default")).normal,Vector3.forward) * (box.size.x * 0.5f);
+        ref2verts[3] = new Vector3(128,128) + Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized * Physics2D.Raycast(transform.position,Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized,100,LayerMask.GetMask("Player","Default")).distance + Vector3.Cross(Vector3.forward, Physics2D.Raycast(transform.position,Vector3.Reflect((transform.position - player.transform.position).normalized, norm).normalized,100f,LayerMask.GetMask("Player","Default")).normal) * (box.size.x * 0.5f);
+        /*Debug.Log(sprite.rect.width + " " + sprite.rect.height + " " + sprite.rect.x + " " + sprite.rect.y);
         Debug.Log(sprite2.rect.width + " " + sprite2.rect.height + " " + sprite2.rect.x + " " + sprite2.rect.y);
         Debug.Log(ref1verts[0] + " " + ref1verts[1] + " " + ref1verts[2]);
-        Debug.Log(ref2verts[0] + " " + ref2verts[1] + " " + ref2verts[2]);
+        Debug.Log(ref2verts[0] + " " + ref2verts[1] + " " + ref2verts[2]);*/
         sprite.OverrideGeometry(ref1verts, verts);
         sprite2.OverrideGeometry(ref2verts, verts);
         ref1.sprite = sprite;
@@ -70,8 +81,9 @@ public class Mirror : MonoBehaviour
         var scaler = new Vector3(1f/(transform.localScale.x/sprite.rect.width),1f/(transform.localScale.y/sprite.rect.width),0);
         ref1.transform.localScale = scaler;
         ref2.transform.localScale = scaler;
-        poly1.points = ref1verts.Select(v => new Vector2(v.x - 128f,v.y - 128f)).ToArray();
-        poly2.points = ref2verts.Select(v => new Vector2(v.x - 128f,v.y - 128f)).ToArray();
+        poly1.SetPath(0,ref1verts.Select(v => new Vector2((v.x - 128f)/256f,(v.y - 128f)/256f)).OrderByDescending(v => v.y).ThenBy(v => Mathf.Abs(v.y) == 0f ? v.x : -v.x).ToArray());
+        poly2.SetPath(0, ref2verts.Select(v => new Vector2((v.x - 128f)/256f,(v.y - 128f)/256f)).OrderByDescending(v => v.y).ThenBy(v => Mathf.Abs(v.y) == 0f ? v.x : -v.x).ToArray());
+
 
         /*ref1.transform.localScale = new Vector3(10,10,10);
         ref2.transform.localScale = new Vector3(10,10,10);*/

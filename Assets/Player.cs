@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
 
@@ -34,6 +35,18 @@ public class Player : Health
     private AudioSource audioSource;
 
     private AudioSource Gunaudio;
+
+    public GameObject prompt;
+    private bool hasshot = false;
+    public bool isprompt = false;
+    public bool skiptutorial = false;
+
+    public List<GameObject> MouseClick;
+    public bool haskilled = false;
+    private bool waskilled = false;
+    public bool hascompletedtutorial = false;
+    private float beforeprompthealth = 0f;
+    public GameObject killedwall;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -47,6 +60,8 @@ public class Player : Health
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (isprompt)
+            return;
         rb.linearVelocity = Vector2.zero;
         var hor = Input.GetAxis("Horizontal");
         var ver = Input.GetAxis("Vertical");
@@ -111,6 +126,24 @@ public class Player : Health
             }
         }
 
+
+
+
+        spriteRenderer.transform.localScale = new Vector3(2, Mathf.Lerp(c,targety,Time.deltaTime * bobspeed), 2);
+        prevpos = transform.position;
+    }
+
+    void Update()
+    {
+        if (haskilled != waskilled)
+        {
+            Destroy(killedwall);
+            waskilled = haskilled;
+            Time.timeScale = 0.05f;
+            Prompt("Great Job!");
+        }
+        if (isprompt)
+            return;
         if (Gun != null)
         {
             var mouse = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
@@ -118,6 +151,23 @@ public class Player : Health
             Gun.transform.rotation = Quaternion.LookRotation(mouse - transform.position) * Quaternion.Euler(0, 90, 0);
             if (Input.GetMouseButtonDown(0) && canShoot)
             {
+                if (!hasshot && !skiptutorial)
+                {
+                    foreach (var m in MouseClick)
+                    {
+                        Destroy(m);
+                    }
+                 hasshot = true;
+                 Time.timeScale = 0.05f;
+                 Prompt("" +
+                        "TRUST NO ONE,\n" +
+                        "NOT EVEN YOUR BULLETS\n\n" +
+                        "Your bullets will home towards you when they see you\n" +
+                        "(Bullets will turn red when they see you)\n\n" +
+                        "You have taken your weapon from one of the dead of this place's inhabitants\n" +
+                        "It has a failsafe to prevent exactly this, homing\n" +
+                        "Try shooting these targets (bullets bounce off walls, try it! )");
+                }
                 Gunaudio.Play();
                 canShoot = false;
                 StartCoroutine(Cooldown());
@@ -138,11 +188,8 @@ public class Player : Health
                 Gunaudio = Gun.GetComponent<AudioSource>();
             }
         }
-
-
-        spriteRenderer.transform.localScale = new Vector3(2, Mathf.Lerp(c,targety,Time.deltaTime * bobspeed), 2);
-        prevpos = transform.position;
     }
+
 
     public override void DamageEffect(float fraction)
     {
@@ -161,6 +208,10 @@ public class Player : Health
     spriteRenderer.color = Color.red;
     Camera.main.backgroundColor = Color.crimson;
     Time.timeScale = 0.05f;
+    rb.freezeRotation = false;
+    StopAllCoroutines();
+    spriteRenderer.color = Color.red;
+    rb.AddForceAtPosition(Random.insideUnitCircle * 100f, Random.insideUnitCircle);
     Instantiate(DiedMenu);
     this.enabled = false;
     }
@@ -175,5 +226,21 @@ public class Player : Health
     {
         yield return new WaitForSeconds(time);
         spriteRenderer.color = Color.white;
+    }
+
+    public void Prompt(string message)
+    {
+        isprompt = true;
+        var p = Instantiate(prompt);
+        var pc = p.GetComponent<Prompt>();
+        beforeprompthealth = currentHealth;
+        pc.OnComplete = () =>
+        {
+            this.currentHealth = beforeprompthealth;
+            this.ValidateHealth();
+            this.OnHealthChanged();
+            this.isprompt = false;
+            Time.timeScale = 1f; return true; };
+        pc.Message(message);
     }
 }
