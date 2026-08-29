@@ -6,10 +6,12 @@ namespace DefaultNamespace
     {
         private static LevelSwitcher switcher;
         private static bool loaded = false;
+        public static int currentlevel = 0;
         public static void LoadLevel(int level)
         {
             if (loaded)
             {
+                currentlevel = level;
                 switcher.LoadLevel(level);
             }
         }

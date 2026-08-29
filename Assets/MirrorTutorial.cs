@@ -19,7 +19,7 @@ public class MirrorTutorial : MonoBehaviour
             }
             Time.timeScale = 0.05f;
             p.Prompt("This is a mirror!\n\n" +
-                     "Your bullets will home towards the mirror if they see you in the mirror.\n\n" +
+                     "Your bullets will also home towards your reflection in the mirror if they see you in the mirror.\n\n" +
                      "Try it!");
             Instantiate(Mirror, placement.position, Quaternion.identity);
         }

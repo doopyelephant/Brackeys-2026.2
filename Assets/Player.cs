@@ -31,7 +31,7 @@ public class Player : Health
     public float stride = 5f;
     private bool walkcycle = false;
     public float cooldown = 0.5f;
-    private bool canShoot = true;
+    public bool canShoot = true;
 
     public GameObject DiedMenu;
     private AudioSource audioSource;
@@ -137,6 +137,13 @@ public class Player : Health
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.C) && Input.GetKey(KeyCode.H) && Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.T))
+        {
+            foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
+            {
+            Destroy(enemy);
+            }
+        }
         if (haskilled != waskilled)
         {
             Destroy(killedwall);

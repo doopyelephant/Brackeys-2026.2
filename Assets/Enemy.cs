@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class Enemy : Health
 {
@@ -31,6 +32,11 @@ public class Enemy : Health
     private SpriteRenderer gunsprite;
     public Shoot sht;
     public GameObject Bullet;
+    public GameObject pop;
+    public VideoPlayer vp;
+    public GameObject thx;
+
+    public bool isboss = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -80,7 +86,7 @@ public class Enemy : Health
         }
         if (movement.x != 0)
         {
-            if (movement.x > 0f)
+            if (movement.x > 0.1f)
             {
                 spriteRenderer.flipX = true;
             }
@@ -110,7 +116,27 @@ public class Enemy : Health
 
     private Vector3 GetMovement()
     {
-        if (Random.value < 0.5f * Time.deltaTime)
+        if (isboss && Random.value < 0.15f * Time.deltaTime)
+        {
+            var hit = Physics2D.Raycast(transform.position, Random.insideUnitCircle.normalized, 10f,
+                LayerMask.GetMask("Default"));
+            int tries = 10;
+            while (hit.distance != 10f && tries > 0)
+            {
+                tries--;
+                hit = Physics2D.Raycast(transform.position, Random.insideUnitCircle.normalized, 10f,
+                    LayerMask.GetMask("Default"));
+            }
+            Instantiate(pop, transform.position, Quaternion.identity);
+            transform.position = hit.point;
+        }
+        if (currentHealth == maxHealth && !Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, 100,
+                LayerMask.GetMask("Player", "Default")).collider.gameObject.CompareTag("Player"))
+        {
+            return Random.insideUnitCircle * 0.1f;
+        }
+        if (Random.value < (isboss ? 1.5f : 0.5f) * GlobalDifficulty.shootmultiplier * Time.deltaTime && Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, 100,
+                LayerMask.GetMask("Player", "Default")).collider.gameObject.CompareTag("Player"))
         {
             StartCoroutine(ShootGun());
         }
@@ -145,6 +171,10 @@ public class Enemy : Health
         sht.ShootGun();
         var tmp = Instantiate(Bullet, gunsprite.transform.position + (player.transform.position - transform.position).normalized, Quaternion.identity);
         tmp.GetComponent<Rigidbody2D>().linearVelocity = (player.transform.position - transform.position).normalized * 10f;
+        if (isboss)
+        {
+            tmp.transform.localScale = new Vector3(5f, 5f, 5f) * tmp.transform.localScale.x;
+        }
         yield return new WaitForSeconds(1.5f);
         shooting = false;
         gunsprite.enabled = false;
@@ -168,7 +198,23 @@ public class Enemy : Health
 
     public override void Die()
     {
+        if (isboss)
+        {
+            vp.targetCamera = Camera.main;
+            vp.Play();
+            StartCoroutine(Thanks());
+            player.SetActive(false);
+            return;
+        }
+
+
         player.transform.parent.GetComponent<Player>().haskilled = true;
-     Destroy(gameObject);
+         Destroy(gameObject);
+    }
+
+    IEnumerator Thanks()
+    {
+        yield return new WaitForSeconds(16f/3f);
+        thx.SetActive(true);
     }
 }

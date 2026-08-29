@@ -18,8 +18,9 @@ public class MenuManager : MonoBehaviour
     {
         Application.Quit();
     }
-    public void Play()
+    public void Play(float difficulty)
     {
+        GlobalDifficulty.shootmultiplier = difficulty;
         Debug.Log("play");
         SceneManager.LoadScene("WakeUp");
     }
@@ -40,6 +41,13 @@ public class MenuManager : MonoBehaviour
             DontDestroyOnLoad(skipper);
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        if (SceneManager.GetActiveScene().name == "WakeUp")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+        else
+        {
+            GlobalLevelManager.LoadLevel(GlobalLevelManager.currentlevel);
+        }
     }
 }

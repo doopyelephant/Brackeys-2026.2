@@ -34,6 +34,16 @@ using UnityEngine.SceneManagement;
         {
             foreach (var obj in PersistentObjects.Append(gameObject))
             {
+                if (obj.name == "Player")
+                {
+                    obj.GetComponent<Player>().enabled = true;
+                    obj.GetComponent<Player>().canShoot = true;
+                    obj.transform.GetChild(0).GetComponent<SpriteRenderer>().color = Color.white;
+                    obj.GetComponent<Health>().Heal(1000f);
+                    obj.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+                    obj.GetComponent<Rigidbody2D>().freezeRotation = true;
+                    obj.transform.rotation = Quaternion.identity;
+                }
                 obj.transform.position = new Vector3(0, 0, obj.transform.position.z);
                 DontDestroyOnLoad(obj);
             }

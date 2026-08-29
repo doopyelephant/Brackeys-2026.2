@@ -13,6 +13,7 @@ public class Mirror : MonoBehaviour
     private PolygonCollider2D poly2;
     private ushort [] verts = new ushort []{0,1,2,1,2,3};
     private BoxCollider2D box;
+    public SpriteRenderer reflection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,6 +40,7 @@ public class Mirror : MonoBehaviour
         {
             ref1.enabled = false;
             ref2.enabled = false;
+            reflection.enabled = false;
             return;
         }
 
@@ -48,8 +50,10 @@ ref1.enabled = false;
 ref2.enabled = false;
 poly1.enabled = false;
 poly2.enabled = false;
+reflection.enabled = false;
 return;
         }
+        reflection.enabled = true;
         ref1.enabled = true;
         ref2.enabled = true;
         poly1.enabled = true;
@@ -76,6 +80,10 @@ return;
         Debug.Log(ref2verts[0] + " " + ref2verts[1] + " " + ref2verts[2]);*/
         sprite.OverrideGeometry(ref1verts, verts);
         sprite2.OverrideGeometry(ref2verts, verts);
+        ref1.transform.localPosition =  Vector3.zero;
+        ref2.transform.localPosition =  Vector3.zero;
+        ref1.transform.localRotation = Quaternion.Inverse(transform.rotation);
+        ref2.transform.localRotation = Quaternion.Inverse(transform.rotation);
         ref1.sprite = sprite;
         ref2.sprite = sprite2;
         var scaler = new Vector3(1f/(transform.localScale.x/sprite.rect.width),1f/(transform.localScale.y/sprite.rect.width),0);
