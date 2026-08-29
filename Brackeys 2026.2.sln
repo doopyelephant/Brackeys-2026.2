@@ -195,8 +195,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.PerformanceTesting", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.TextMeshPro", "Unity.TextMeshPro.Player.csproj", "{1d6e10e3-912e-3371-cde0-4d0c57175367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Rendering.LightTransport.Runtime", "Unity.Rendering.LightTransport.Runtime.Player.csproj", "{04973966-fd7f-29bd-579d-b781145a9cd0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.InternalAPIEngineBridge.001", "Unity.InternalAPIEngineBridge.001.Player.csproj", "{ad1c267f-32bc-5651-78a0-5f0debae4147}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.VisualScripting.State", "Unity.VisualScripting.State.Player.csproj", "{c4d3f0e0-5536-6994-58ef-45b1db543ed5}"
@@ -490,8 +488,6 @@ Global
 		{416e7a01-4546-f644-a181-b153d76e19df}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1d6e10e3-912e-3371-cde0-4d0c57175367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1d6e10e3-912e-3371-cde0-4d0c57175367}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{04973966-fd7f-29bd-579d-b781145a9cd0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{04973966-fd7f-29bd-579d-b781145a9cd0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ad1c267f-32bc-5651-78a0-5f0debae4147}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ad1c267f-32bc-5651-78a0-5f0debae4147}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{c4d3f0e0-5536-6994-58ef-45b1db543ed5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

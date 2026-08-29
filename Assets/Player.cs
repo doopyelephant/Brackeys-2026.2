@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Player : Health
 {
@@ -241,6 +243,22 @@ public class Player : Health
             this.OnHealthChanged();
             this.isprompt = false;
             Time.timeScale = 1f; return true; };
+        pc.Message(message);
+    }
+    public void Prompt(string message,Func<bool> oncomplete)
+    {
+        isprompt = true;
+        var p = Instantiate(prompt);
+        var pc = p.GetComponent<Prompt>();
+        beforeprompthealth = currentHealth;
+        pc.OnComplete = () =>
+        {
+            this.currentHealth = beforeprompthealth;
+            this.ValidateHealth();
+            this.OnHealthChanged();
+            this.isprompt = false;
+            Time.timeScale = 1f;
+            oncomplete.Invoke(); return true; };
         pc.Message(message);
     }
 }
