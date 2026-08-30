@@ -1,6 +1,6 @@
 # You Are Your Own Worst Enemy
 <img width="831" height="480" alt="Screenshot 2026-08-29 162223" src="https://github.com/user-attachments/assets/57ef2a69-7288-4f49-925b-1796316c3454" />
-![Hackatime](https://hackatime.hackclub.com/api/v1/badge/U091JFGRL14/doopyelephant/brackeys-2026.2)
+<iframe src="https://hackatime.hackclub.com/api/v1/badge/U091JFGRL14/doopyelephant/brackeys-2026.2" width="100%" height="500px"></iframe>
 A small jam game made for Brackeys 2026.2, about being imprisoned for your love of calamari. It is a 2D topdown shooter against octopuses with 4 levels + a boss fight. 
 Your bullets home towards you, meaning you need to fire carefully. With Mirrors in levels to manipulate the bullets. When the bullet sees you in the mirror it will try to go for your reflection.
 Made as a part of Hack Club Jame Gam.
